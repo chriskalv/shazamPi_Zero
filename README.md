@@ -1,12 +1,14 @@
 # shazamPi
 A python-based implementation of recording capability and Shazam track analysis on a Raspberry Pi Zero 2.
 
+
 Functionality:
 
 1. After booting up, the shazamPi device shows a blue LED on the microphone board, in order to indicate that it is operational.
 2. On pushing the button on the microphone board, the Pi checks whether is is connected to the internet or not.
-   - Not connected: It records a 12s audio clip and stores it on the microSD card
-   - Connected: It analyzes all previously recorded tracks, moves them from a 'new recordings' directory to a 'old recordings' directory, writes a log file, saves it to the device and sends it via eMail.
+   - Not connected: It records a 12s audio clip and stores it on the microSD card (red LED is shown)
+   - Connected: It analyzes all previously recorded tracks, moves them from a 'new recordings' directory to a 'old recordings' directory, writes a log file, saves it to the device and sends it via eMail (green LED progress bar is shown).
+3. After recording/analysis, the device reverts back to the "waiting for button push" status, indicated by the blue LED.
 
 Hardware:
 
