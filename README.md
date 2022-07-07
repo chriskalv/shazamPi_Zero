@@ -1,30 +1,53 @@
 shazamPi
 ========================
 
-A device to record and analyze tracks with a Raspberry Pi Zero 2. Entirely python-based.
+A device to record and analyze tracks with a Raspberry Pi Zero 2 and a microphone HAT. Entirely python-based.
+
 
 [![](https://i.imgur.com/pyAoYx3.jpg?raw=true)](https://i.imgur.com/pyAoYx3.jpg)
 
 
 ## Hardware
 + [Raspberry Pi Zero 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
-+ [Waveshare Uninterruptable Power Supply HAT (C) - 1000 mAh](https://www.waveshare.com/wiki/UPS_HAT_(C))
 + [Seeed ReSpeaker 2-Mics Pi HAT](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/)
++ [Waveshare Uninterruptable Power Supply HAT (C) - 1000 mAh](https://www.waveshare.com/wiki/UPS_HAT_(C))
+
 
 ## Functionality
-1. After booting up, the shazamPi device shows a blue LED on the microphone board, in order to indicate that it is operational.
-2. On pushing the button on the microphone board, the Pi checks whether is is connected to the internet or not.
-   - Not connected: It records a 12s audio clip and stores it on the microSD card (red LED is shown)
-   - Connected: It analyzes all previously recorded tracks, moves them from a 'new recordings' directory to a 'old recordings' directory, writes a log file, saves it to the device and sends it via eMail (green LED progress bar is shown).
-3. After recording/analysis, the device reverts back to the "waiting for button push" status, indicated by the blue LED.
+The shazamPi device is supposed to be a gadget, which can be taken to places like festivals e.g., where taking a phone with you does not really make sense, but you still want to be able to identify tracks.
+
+1. On **bootup**:
+   + Power-saving measures are activated
+   + The shazampi.py script is started. 
+   + Once everything is operational, a blue LED on the ReSpeaker board lights up, signaling the device is _'ready to be used'_.
+
+2. On **pushing the button** on the ReSpeaker board, the device checks for an internet connection.
+   + If there is no internet connection (= the user is away from home):
+      - An audio clip is recorded while a red LED illuminates. 
+      - After recording, the new file is stored on the microSD card.
+      - Once finished, the device reverts to the _'ready to be used'_ status (blue LED).
+   + If there is an internet connection (= the user is home):
+      - All previously recorded clips are analyzed for artist and track name data, while a green LED progress bar illuminates. 
+      - All analysis results are stored in a log file and sent via eMail. 
+      - All analyzed clips are moved to a seperate directory on the microSD card, so they won't be analyzed a second time. 
+      - Once finished, the devices reverts to the _'ready to be used'_ status (blue LED).
+
 
 ## Setup
-1. Flash piOS auf microSD 
-2. sudo apt-get update && sudo apt-get upgrade
-3. Installiere Respeaker Karte: https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT_Raspberry/
-4. Installiere LED libraries etc.
-5. Fortwährender Settings restore für den Soundkartenmixer nach reboot: https://dev.to/luisabianca/fix-alsactl-store-that-does-not-save-alsamixer-settings-130i
-6. Installiere Shazam Library: https://github.com/dotX12/ShazamIO
-7. shazam.py in bash autostart packen
-8. Verringere pi Zero Stromverbrauch: https://www.cnx-software.com/2021/12/09/raspberry-pi-zero-2-w-power-consumption/
-
+1. Flash piOS onto microSD card (SSH enabled), assemble the hardware and make the device connect to your WiFi.
+2. `sudo apt-get update -y && sudo apt-get upgrade -y`
+3. Install Seeed ReSpeaker 2-Mics Pi HAT with these [Instructions](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT_Raspberry/) and manage settings:
+   - Lower the left/right input db gain to 0
+   - Restore your `alsamixer` configuration automatically after reboot. How this is done is described [here](https://dev.to/luisabianca/fix-alsactl-store-that-does-not-save-alsamixer-settings-130i).
+4. Install shazam library with these [Instructions](https://github.com/dotX12/ShazamIO).
+5. Install other libraries that are needed.
+6. Reduce power consumption of your device with these [Instructions](https://www.cnx-software.com/2021/12/09/raspberry-pi-zero-2-w-power-consumption/):
+   - Disable HDMI Input/Output
+   - Disable bluetooth
+   - Disable pi board LED
+   - Throttle CPU
+7. Copy and edit the `shazampi.py` script as well as the folder structure on your device:
+   - Create directories for new recordings, old recording and logs
+   - Edit global settings at the top of `shazampi.py` to your needs
+   - Make sure to edit permissions of files/folders, so the script can read, write and execute adequately
+   - Make the `shazampi.py` autostart on bootup
