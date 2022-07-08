@@ -1,7 +1,7 @@
 shazamPi
 ========================
 
-A mobile device to record and analyze tracks with a Raspberry Pi Zero 2 and a microphone HAT (and a battery). Entirely python-based.
+A mobile device to record and analyze tracks with a Raspberry Pi Zero 2 and a microphone HAT, powered by a li-ion battery. Entirely python-based and fairly easy to build.
 
 
 [![](https://i.imgur.com/pyAoYx3.jpg?raw=true)](https://i.imgur.com/pyAoYx3.jpg)
@@ -10,7 +10,7 @@ A mobile device to record and analyze tracks with a Raspberry Pi Zero 2 and a mi
 ## Hardware
 + [Raspberry Pi Zero 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
 + [Seeed ReSpeaker 2-Mics Pi HAT](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/)
-+ [Waveshare Uninterruptable Power Supply HAT (C) - 1000 mAh](https://www.waveshare.com/wiki/UPS_HAT_(C)) (any other Pi Zero battery works, too
++ [Waveshare Uninterruptable Power Supply HAT (C) - 1000 mAh](https://www.waveshare.com/wiki/UPS_HAT_(C))
 
 
 ## Functionality
