@@ -1,9 +1,10 @@
-############################
-##### SHAZAMPI MACHINE #####
-########## BY CK ###########
-############################
+##################################
+######## SHAZAMPI MACHINE ########
+############# BY CK ##############
+##################################
 
-# Global settings
+# --------------------------------
+# --------Global settings---------
 # Email data for shazam logs:
 email_origin = "asdfasdf@gmail.com"
 email_target = "asdfasdf@asdfasdf.com"
@@ -15,6 +16,7 @@ log_path = "/var/shazamPi/analysis_logs"
 # Recording preferences (length of recorded files in seconds and sampling rate in hz):
 respeaker_recordseconds = 12
 respeaker_samplingrate = 32000
+# --------------------------------
 
 # Libraries and global variables for...
 # ...internet connection check
@@ -77,7 +79,7 @@ async def main():
     while True:
         state = GPIO.input(17)
         
-        # If button is untouched, don't do anything
+        # If button is untouched, don't do anything and recheck in one second
         if state:
             time.sleep(1)
             
@@ -105,13 +107,6 @@ async def main():
                 newrec_file_counter = 0
                 current_id_counter = 0
                 current_success_counter = 0
-                
-                # Make the first LED shine in bright green and the two others in dimmed green
-                position_greenled = 0
-                strip.set_pixel_rgb(position_greenled, 0x002000)
-                strip.set_pixel_rgb(1, 0x000100)
-                strip.set_pixel_rgb(2, 0x000100)
-                strip.show()
     
                 # Iterate through files with audio extension in 'new_recordings' directory and count
                 for files in os.listdir(newrec_path):
@@ -142,6 +137,13 @@ async def main():
                 # Create log file
                 file = open(log_path + "/logfile [" + current_timestamp + "].txt", "w")
                 file.write("SHAZAM ANALYSIS LOG\n\nDate: " + current_date + "\nTime: " + current_time + "\n\n\n")
+                
+                # Make the first LED shine in bright green and the two others in dimmed green
+                position_greenled = 0
+                strip.set_pixel_rgb(position_greenled, 0x001800)
+                strip.set_pixel_rgb(1, 0x000100)
+                strip.set_pixel_rgb(2, 0x000100)
+                strip.show()
     
                 # Iterate through files with audio extension in 'new_recordings' directory for shazam analysis
                 for files in os.listdir(newrec_path):
@@ -173,7 +175,7 @@ async def main():
                             position_greenled += 1
                             if position_greenled >= 3:
                                 position_greenled = 0
-                            strip.set_pixel_rgb(position_greenled, 0x002000)
+                            strip.set_pixel_rgb(position_greenled, 0x001800)
                             strip.show()
                         else:
                             # Move file from 'new_recordings' to 'old_recordings' directory and rename to "Unidentified"
@@ -188,10 +190,16 @@ async def main():
                             position_greenled += 1
                             if position_greenled >= 3:
                                 position_greenled = 0
-                            strip.set_pixel_rgb(position_greenled, 0x002000)
+                            strip.set_pixel_rgb(position_greenled, 0x001800)
                             strip.show()
                     else:
                         continue
+                        
+                # Make all LEDs shine in bright green
+                strip.set_pixel_rgb(0, 0x001800)
+                strip.set_pixel_rgb(1, 0x001800)
+                strip.set_pixel_rgb(2, 0x001800)
+                strip.show()
         
                 # Write final status report to file and close it
                 if current_id_counter >= 2:
@@ -232,13 +240,7 @@ async def main():
             # If not connected to the internet, record!
             else:
                 print("Pi is offline. Ready to record (" + str(respeaker_recordseconds) + " seconds, " + str(respeaker_samplingrate)[:2] + " kHz).")
-                
-                # Make the middle LED shine red
-                strip.set_pixel_rgb(0, 0x000000)
-                strip.set_pixel_rgb(1, 0x010000)
-                strip.set_pixel_rgb(2, 0x000000)
-                strip.show()
-                
+                               
                 # Define variables for the microphone HAT
                 respeaker_deviceindex = 0
                 respeaker_channels = 2 
@@ -253,11 +255,17 @@ async def main():
                         newrec_file_counter += 1     
                 recoutput_filename = str(newrec_file_counter + 1) + extension
 
-                # Enable error handling to get rid of sound card prints by alsamixer
+                # Enable error handling to get rid of sound card prints by alsamixer and record audio
                 with noalsaerr():
                     # Load pyaudio
                     p = pyaudio.PyAudio()
-
+                    
+                    # Make the middle LED shine red
+                    strip.set_pixel_rgb(0, 0x000000)
+                    strip.set_pixel_rgb(1, 0x010000)
+                    strip.set_pixel_rgb(2, 0x000000)
+                    strip.show()
+                    
                     # Record audio
                     print("Recording initiated.")
                     stream = p.open(
@@ -276,7 +284,7 @@ async def main():
                     stream.stop_stream()
                     stream.close()
                     p.terminate()
-                print("Recording finished.")
+                    print("Recording finished.")
                 
                 # Write recorded audio to file
                 wf = wave.open(newrec_path + "/" + recoutput_filename, 'wb')
