@@ -6,10 +6,10 @@ A mobile device to record, analyze and identify music on the go, similar to the 
 
 It is supposed to be a gadget, which can be taken to places, where carrying a phone with you does not really make sense (like festivals, for example), but you still want to be able to identify tracks that are being played.
 
-The code is entirely python-based and the device is fairly easy to build.
+The code is entirely python-based and the device is fairly easy to build. There is not even any soldering required if you have the pre-soldered **WH** model of the Pi Zero.
 
 ## Hardware
-+ [Raspberry Pi Zero 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
++ [Raspberry Pi Zero 2 W/WH](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
 + [Seeed ReSpeaker 2-Mics Pi HAT](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/)
 + [Waveshare Uninterruptable Power Supply HAT (C) - 1000 mAh](https://www.waveshare.com/wiki/UPS_HAT_(C))
 
@@ -41,7 +41,7 @@ The code is entirely python-based and the device is fairly easy to build.
 
 ## Setup
 1. Flash [Pi OS](https://www.raspberrypi.com/software/) onto the microSD card (SSH enabled), assemble the hardware and make the device connect to your WiFi.
-2. `sudo apt-get update -y && sudo apt-get upgrade -y`
+2. `sudo apt-get update && sudo apt-get upgrade -y`
 3. Install Seeed ReSpeaker 2-Mics Pi HAT with these [Instructions](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT_Raspberry/) and manage settings:
    - Adjust the left/right input db gain to an appropriate level, depending on the desired usage environment (loud music = low/no db gain needed)
    - Restore your `alsamixer` configuration automatically after reboot. How this is done is described [here](https://dev.to/luisabianca/fix-alsactl-store-that-does-not-save-alsamixer-settings-130i).
