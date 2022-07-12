@@ -12,6 +12,7 @@ The code is entirely python-based and the device is fairly easy to build. There 
 + [Raspberry Pi Zero 2 W/WH](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
 + [Seeed ReSpeaker 2-Mics Pi HAT](https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/)
 + [Waveshare Uninterruptable Power Supply HAT (C) - 1000 mAh](https://www.waveshare.com/wiki/UPS_HAT_(C))
++ [MicroSD Card](https://www.westerndigital.com/products/memory-cards/sandisk-extreme-uhs-i-microsd#SDSQXAF-032G-GN6MA) (pretty much any will do)
 
 <br></br>
 
