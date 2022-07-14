@@ -10,13 +10,12 @@ email_origin = "asdfasdf@gmail.com"
 email_target = "asdfasdf@asdfasdf.com"
 email_password = "yourpasswordhere"
 # File directories for new recordings, already analyzed recordings and log files:
-newrec_path = "/var/shazamPi/new_recordings"
-oldrec_path = "/var/shazamPi/old_recordings"
-log_path = "/var/shazamPi/analysis_logs"
+newrec_path = "/var/shazampi/new_recordings"
+oldrec_path = "/var/shazampi/old_recordings"
+log_path = "/var/shazampi/analysis_logs"
 # Recording preferences (length of recorded files in seconds and sampling rate in hz):
 respeaker_recordseconds = 12
 respeaker_samplingrate = 32000
-# --------------------------------
 
 # Libraries and global variables for...
 # ...internet connection check
@@ -43,9 +42,16 @@ from ctypes import *
 from contextlib import contextmanager
 # ...button functionality
 import RPi.GPIO as GPIO
-# ...LED functionality
+# ...LED functionality / colors
 import apa102
 strip = apa102.APA102(num_led=3, order='rgb')
+dimblue = 0x000002
+dimred = 0x010000
+dimgreen = 0x000100
+blue = 0x000015
+red = 0x150000
+green = 0x001500
+off = 0x000000
 
 # Error handler functionality, which filters unnecessary prints from alsamixer
 ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
@@ -63,9 +69,9 @@ def noalsaerr():
     asound.snd_lib_error_set_handler(None)
 
 # Signal successful bootup sequence and <ready> status by lighting a blue LED
-strip.set_pixel_rgb(0, 0x000000)
-strip.set_pixel_rgb(1, 0x000001)
-strip.set_pixel_rgb(2, 0x000000)
+strip.set_pixel_rgb(0, off)
+strip.set_pixel_rgb(1, dimblue)
+strip.set_pixel_rgb(2, off)
 strip.show()
 
 # Main function
@@ -79,15 +85,15 @@ async def main():
     while True:
         state = GPIO.input(17)
         
-        # If button is untouched, don't do anything and recheck in one second
+        # If button is untouched, don't do anything
         if state:
             time.sleep(1)
             
         # If button is pushed, give response by lighting all three LEDs in blue and initiate code
         else:
-            strip.set_pixel_rgb(0, 0x000001)
-            strip.set_pixel_rgb(1, 0x000001)
-            strip.set_pixel_rgb(2, 0x000001)
+            strip.set_pixel_rgb(0, blue)
+            strip.set_pixel_rgb(1, blue)
+            strip.set_pixel_rgb(2, blue)
             strip.show()
             print("----------------------------------------\nThe button has been pushed.")
             
@@ -107,6 +113,13 @@ async def main():
                 newrec_file_counter = 0
                 current_id_counter = 0
                 current_success_counter = 0
+                
+                # Make the first LED shine in bright green and the two others in dimmed green
+                position_greenled = 0
+                strip.set_pixel_rgb(position_greenled, green)
+                strip.set_pixel_rgb(1, dimgreen)
+                strip.set_pixel_rgb(2, dimgreen)
+                strip.show()
     
                 # Iterate through files with audio extension in 'new_recordings' directory and count
                 for files in os.listdir(newrec_path):
@@ -121,9 +134,9 @@ async def main():
                 else:
                     print("There are no files to be analyzed.")
                     print("Restarting the script.\n----------------------------------------")
-                    strip.set_pixel_rgb(0, 0x000000)
-                    strip.set_pixel_rgb(1, 0x000000)
-                    strip.set_pixel_rgb(2, 0x000000)
+                    strip.set_pixel_rgb(0, off)
+                    strip.set_pixel_rgb(1, off)
+                    strip.set_pixel_rgb(2, off)
                     strip.show()
                     sys.stdout.flush()
                     os.execv(sys.executable, 
@@ -137,13 +150,6 @@ async def main():
                 # Create log file
                 file = open(log_path + "/logfile [" + current_timestamp + "].txt", "w")
                 file.write("SHAZAM ANALYSIS LOG\n\nDate: " + current_date + "\nTime: " + current_time + "\n\n\n")
-                
-                # Make the first LED shine in bright green and the two others in dimmed green
-                position_greenled = 0
-                strip.set_pixel_rgb(position_greenled, 0x001800)
-                strip.set_pixel_rgb(1, 0x000100)
-                strip.set_pixel_rgb(2, 0x000100)
-                strip.show()
     
                 # Iterate through files with audio extension in 'new_recordings' directory for shazam analysis
                 for files in os.listdir(newrec_path):
@@ -169,13 +175,13 @@ async def main():
                             file.write("Track " + str(current_id_counter) + "/" + str(newrec_file_counter) + ": " + trackid + "\n")
                             print("Track " + str(current_id_counter) + "/" + str(newrec_file_counter) + " found: " + trackid)
                             # Make the bright green LED move along the dimmer green LEDs on finishing analysis of a track
-                            strip.set_pixel_rgb(0, 0x000100)
-                            strip.set_pixel_rgb(1, 0x000100)
-                            strip.set_pixel_rgb(2, 0x000100)
+                            strip.set_pixel_rgb(0, dimgreen)
+                            strip.set_pixel_rgb(1, dimgreen)
+                            strip.set_pixel_rgb(2, dimgreen)
                             position_greenled += 1
                             if position_greenled >= 3:
                                 position_greenled = 0
-                            strip.set_pixel_rgb(position_greenled, 0x001800)
+                            strip.set_pixel_rgb(position_greenled, green)
                             strip.show()
                         else:
                             # Move file from 'new_recordings' to 'old_recordings' directory and rename to "Unidentified"
@@ -184,22 +190,16 @@ async def main():
                             file.write("Track " + str(current_id_counter) + "/" + str(newrec_file_counter) + ": Not found. \n")
                             print("Track " + str(current_id_counter) + "/" + str(newrec_file_counter) + " not found.")
                             # Make the bright green LED move along the dimmer green LEDs on finishing analysis of a track
-                            strip.set_pixel_rgb(0, 0x000100)
-                            strip.set_pixel_rgb(1, 0x000100)
-                            strip.set_pixel_rgb(2, 0x000100)
+                            strip.set_pixel_rgb(0, dimgreen)
+                            strip.set_pixel_rgb(1, dimgreen)
+                            strip.set_pixel_rgb(2, dimgreen)
                             position_greenled += 1
                             if position_greenled >= 3:
                                 position_greenled = 0
-                            strip.set_pixel_rgb(position_greenled, 0x001800)
+                            strip.set_pixel_rgb(position_greenled, green)
                             strip.show()
                     else:
                         continue
-                        
-                # Make all LEDs shine in bright green
-                strip.set_pixel_rgb(0, 0x001800)
-                strip.set_pixel_rgb(1, 0x001800)
-                strip.set_pixel_rgb(2, 0x001800)
-                strip.show()
         
                 # Write final status report to file and close it
                 if current_id_counter >= 2:
@@ -230,9 +230,9 @@ async def main():
                 print("Log file has been sent to " + email_target + ".")
                 
                 # Signal <ready> status again by lighting one blue LED
-                strip.set_pixel_rgb(0, 0x000000)
-                strip.set_pixel_rgb(1, 0x000001)
-                strip.set_pixel_rgb(2, 0x000000)
+                strip.set_pixel_rgb(0, off)
+                strip.set_pixel_rgb(1, dimblue)
+                strip.set_pixel_rgb(2, off)
                 strip.show()               
                 print("Button is operational again.\n----------------------------------------")
         
@@ -240,7 +240,13 @@ async def main():
             # If not connected to the internet, record!
             else:
                 print("Pi is offline. Ready to record (" + str(respeaker_recordseconds) + " seconds, " + str(respeaker_samplingrate)[:2] + " kHz).")
-                               
+                
+                # Make the middle LED shine red
+                strip.set_pixel_rgb(0, off)
+                strip.set_pixel_rgb(1, red)
+                strip.set_pixel_rgb(2, off)
+                strip.show()
+                
                 # Define variables for the microphone HAT
                 respeaker_deviceindex = 0
                 respeaker_channels = 2 
@@ -255,17 +261,11 @@ async def main():
                         newrec_file_counter += 1     
                 recoutput_filename = str(newrec_file_counter + 1) + extension
 
-                # Enable error handling to get rid of sound card prints by alsamixer and record audio
+                # Enable error handling to get rid of sound card prints by alsamixer
                 with noalsaerr():
                     # Load pyaudio
                     p = pyaudio.PyAudio()
-                    
-                    # Make the middle LED shine red
-                    strip.set_pixel_rgb(0, 0x000000)
-                    strip.set_pixel_rgb(1, 0x010000)
-                    strip.set_pixel_rgb(2, 0x000000)
-                    strip.show()
-                    
+
                     # Record audio
                     print("Recording initiated.")
                     stream = p.open(
@@ -284,7 +284,7 @@ async def main():
                     stream.stop_stream()
                     stream.close()
                     p.terminate()
-                    print("Recording finished.")
+                print("Recording finished.")
                 
                 # Write recorded audio to file
                 wf = wave.open(newrec_path + "/" + recoutput_filename, 'wb')
@@ -295,9 +295,9 @@ async def main():
                 wf.close()
                 
                 # Go back to <ready> status by lighting one blue LED
-                strip.set_pixel_rgb(0, 0x000000)
-                strip.set_pixel_rgb(1, 0x000001)
-                strip.set_pixel_rgb(2, 0x000000)
+                strip.set_pixel_rgb(0, off)
+                strip.set_pixel_rgb(1, dimblue)
+                strip.set_pixel_rgb(2, off)
                 strip.show()
                 print("Button is operational again.\n----------------------------------------")
 
