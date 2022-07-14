@@ -17,8 +17,10 @@ The code is entirely python-based and the device is fairly easy to build. There 
 <br></br>
 
 | Close-up of the assembled device   | Red means recording   |
-| ------------- | -------------|
+| :-------------: | :-------------: |
 | [![](https://i.imgur.com/bUT98Rx.jpg?raw=true)](https://i.imgur.com/bUT98Rx.jpg)   |   [![](https://i.imgur.com/pAnGlDO.jpg?raw=true)](https://i.imgur.com/pAnGlDO.jpg)   |
+| **Finished device inside 3D-printed case inside fanny pack**   |   **Blue means ready**   |
+|  [![](https://i.imgur.com/hYEt4os.png?raw=true)](https://i.imgur.com/hYEt4os.png)   |   [![](https://i.imgur.com/lvmLCtV.png?raw=true)](https://i.imgur.com/lvmLCtV.png)   |
 
 <br></br>
 
@@ -47,16 +49,18 @@ The code is entirely python-based and the device is fairly easy to build. There 
    - Adjust the left/right input db gain to an appropriate level, depending on the desired usage environment (loud music = low/no db gain needed)
    - Restore your `alsamixer` configuration automatically after reboot. How this is done is described [here](https://dev.to/luisabianca/fix-alsactl-store-that-does-not-save-alsamixer-settings-130i).
 4. Install shazam library with these [Instructions](https://github.com/dotX12/ShazamIO).
-5. Reduce power consumption of your device with these [Instructions](https://www.cnx-software.com/2021/12/09/raspberry-pi-zero-2-w-power-consumption/):
+5. Copy the `shazampi.py` file to your device and edit the script as well as your folder structure:
+   - Create directories for new recordings, old recording and logs
+   - Edit global settings at the top of `shazampi.py` to your needs
+   - Make sure to edit permissions of files/folders, so the script can read, write and execute adequately (`sudo chmod 777 -R` your shazampi folder)
+6. Copy the `apa102.py` library for the LED control of the ReSpeaker HAT into the same directory as your `shazampi.py` file. You can find the required library [here](https://github.com/respeaker/mic_hat/blob/master/interfaces/apa102.py).
+7. Reduce power consumption of your device with these [Instructions](https://www.cnx-software.com/2021/12/09/raspberry-pi-zero-2-w-power-consumption/):
    - Disable HDMI input/output
    - Disable bluetooth
    - Disable Pi board LED
    - Throttle CPU
-6. Copy the `shazampi.py` file to your device and edit the script as well as your folder structure:
-   - Create directories for new recordings, old recording and logs
-   - Edit global settings at the top of `shazampi.py` to your needs
-   - Make sure to edit permissions of files/folders, so the script can read, write and execute adequately (`sudo chmod 777 -R` your shazampi folder)
-   - Make the `shazampi.py` autostart on bootup
+8. Make `shazampi.py` autostart on bootup. If you do not know how, take a look [here](https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/).
+
 
 ## Case
-A 3D-printed case is in the works and will be linked here in the future.
+The 3D-printed case for this device, which was integrated into a fanny pack (as you can see on the pictures), was created by a friend of mine. As soon as he uploads the model to Thingiverse, I will link it here.
