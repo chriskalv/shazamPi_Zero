@@ -19,7 +19,7 @@ The code is entirely python-based and the device is fairly easy to build. There 
 | Close-up of the assembled device   | Red means recording   |
 | :-------------: | :-------------: |
 | [![](https://i.imgur.com/bUT98Rx.jpg?raw=true)](https://i.imgur.com/bUT98Rx.jpg)   |   [![](https://i.imgur.com/pAnGlDO.jpg?raw=true)](https://i.imgur.com/pAnGlDO.jpg)   |
-| **Finished device inside 3D-printed case inside fanny pack**   |   **Blue means ready**   |
+| **Finished device inside 3D-printed case & fanny pack**   |   **Blue means ready**   |
 |  [![](https://i.imgur.com/hYEt4os.png?raw=true)](https://i.imgur.com/hYEt4os.png)   |   [![](https://i.imgur.com/lvmLCtV.png?raw=true)](https://i.imgur.com/lvmLCtV.png)   |
 
 <br></br>
