@@ -1,4 +1,4 @@
-shazamPi
+shazamPi Zero
 ========================
 
 
